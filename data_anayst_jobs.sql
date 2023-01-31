@@ -24,7 +24,11 @@ FROM data_analyst_jobs
 WHERE review_count BETWEEN 500 AND 1000;
 -- Answer 151 
 -- 6. Show the average star rating for companies in each state. The output should show the state as `state` and the average rating for the state as `avg_rating`. Which state shows the highest average rating?
-SELECT AVG(star_rating) AS avg_rating, 
+SELECT AVG(star_rating) AS avg_rating, location AS states 
+FROM data_analyst_jobs
+GROUP BY states
+ORDER BY avg_rating DESC;
+-- Answer NE
 --7.Select unique job titles from the data_analyst_jobs table. How many are there?
 SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs;
@@ -65,3 +69,28 @@ SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs
 WHERE (title NOT LIKE '%Analyst%' OR title NOT LIKE '%Analytics%');
 -- Answer 802 the word data.
+---You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
+SELECT COUNT(title) AS num_jobs, domain 
+FROM data_analyst_jobs
+WHERE skill ILIKE '%SQL%'
+AND days_since_posting > 21;
+ - Disregard any postings where the domain is NULL. 
+SELECT COUNT(title) AS num_jobs, domain 
+FROM data_analyst_jobs
+WHERE skill ILIKE '%SQL%'
+AND days_since_posting > 21
+AND domain IS NOT NULL;
+ - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
+SELECT COUNT(title) AS num_jobs, domain
+FROM data_analyst_jobs
+WHERE skill ILIKE '%SQL%'
+AND days_since_posting > 21
+AND domain IS NOT NULL
+GROUP BY domain
+ORDER BY num_jobs DESC;
+
+  - Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
+"Internet and Software"  62
+"Banks and Financial Services" 61
+"Consulting and Business Services" 57
+"Health Care" 52
